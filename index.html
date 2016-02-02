@@ -1,0 +1,63 @@
+<html ng-app="myApp">
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+		<script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+		<script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+	</head>
+
+	<body ng-controller="MyController" ng-cloak>
+		<div layout="column">
+			<md-content>
+				<md-toolbar class="md-primary md-hue-2"></md-toolbar>
+			</md-content>
+		</div>
+		<div class="container">
+		<div class="example-chat-toolbar">
+		<input ng-model="msg"  type="text" id="messageInput"  placeholder="Type a message...">
+		<input type="text" ng-model="codename" placeholder="Codename">
+		<button ng-model-"submit" ng-click="addPost()" type="button">Share</button>
+		</div>
+
+		<ul id="example-messages" class="example-chat-messages">
+		<li ng-repeat="msg in messages">
+		<strong class="example-chat-username">{{ msg.from }}</strong>
+		{{ msg.body }}
+		</li>
+		</ul>
+		</div>
+
+		<script>
+			var myApp = angular.module("myApp", ["firebase","ngMaterial"]);
+			myApp.controller("MyController", ["$scope", "$firebaseArray", function($scope, $firebaseArray) {
+				var ref = new Firebase("https://e38pczko70p.firebaseio-demo.com/");
+				$scope.messages = $firebaseArray(ref);
+				$scope.addPost = function() {
+					//LISTEN FOR RETURN KEY
+					if ($scope.msg) {
+					//ALLOW CUSTOM OR ANONYMOUS USER NAMES
+					var name =  "anonymous";
+
+					//ADD TO FIREBASE
+					$scope.messages.$add({
+					from: name,
+					body: $scope.msg
+					});
+
+					//RESET MESSAGE
+					$scope.msg = "";
+					}
+				}
+			}]);
+			myApp.config(function($mdThemingProvider) {
+				$mdThemingProvider.theme('default')
+				.primaryPalette('blue')
+				.accentPalette('green');
+			});
+		</script>
+	</body>
+</html>
